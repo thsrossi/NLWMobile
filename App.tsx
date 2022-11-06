@@ -2,7 +2,8 @@ import { THEME } from './src/styles/theme';
 import { NativeBaseProvider, StatusBar } from 'native-base';
 import { useFonts, Roboto_400Regular, Roboto_500Medium, Roboto_700Bold } from '@expo-google-fonts/roboto'
 import { Loading } from './src/components/Loading'
-import SignIn from './src/screens/SignIn';
+
+import Pools from './src/screens/Pools';
 import { AuthContextProvider } from './src/contexts/AuthContext';
 
 export default function App() {
@@ -17,7 +18,7 @@ export default function App() {
           backgroundColor={"transparent"}
           translucent
         />
-        {fontsLoaded ? <SignIn /> : <Loading />}
+        {fontsLoaded ? <Pools /> : <Loading />}
       </AuthContextProvider>
     </NativeBaseProvider>
   );
