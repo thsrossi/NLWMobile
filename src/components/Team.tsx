@@ -7,9 +7,10 @@ interface Props {
   code: string;
   position: 'left' | 'right';
   onChangeText: (value: string) => void;
+  guess: number
 }
 
-export function Team({ code, position, onChangeText }: Props) {
+export function Team({ code, position, onChangeText, guess }: Props) {
   return (
     <HStack alignItems="center">
       {position === 'left' && <CountryFlag isoCode={code} size={25} style={{ marginRight: 12 }} />}
@@ -21,6 +22,8 @@ export function Team({ code, position, onChangeText }: Props) {
         fontSize="xs"
         keyboardType="numeric"
         onChangeText={onChangeText}
+        defaultValue={guess?.toString()}
+        isDisabled={guess != undefined}
       />
 
       {position === 'right' && <CountryFlag isoCode={code} size={25} style={{ marginLeft: 12 }} />}

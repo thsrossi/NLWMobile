@@ -1,6 +1,9 @@
 import { Button, HStack, Text, useTheme, VStack } from 'native-base';
 import { X, Check } from 'phosphor-react-native';
-import { getName } from 'country-list';
+import { getName, overwrite, } from 'country-list';
+import dayjs from 'dayjs';
+import utc from "dayjs/plugin/utc";
+import ptBR from 'dayjs/locale/pt-br'
 
 import { Team } from './Team';
 
@@ -15,6 +18,7 @@ interface GuessProps {
 
 export interface GameProps {
   id: string;
+  date: string;
   firstTeamCountryCode: string;
   secondTeamCountryCode: string;
   guess: null | GuessProps;
@@ -22,14 +26,28 @@ export interface GameProps {
 
 interface Props {
   data: GameProps;
-  onGuessConfirm: () => void;
-  setFirstTeamPoints: (value: string) => void;
-  setSecondTeamPoints: (value: string) => void;
+  onGuessConfirm?: () => void;
+  setFirstTeamPoints?: (value: string) => void;
+  setSecondTeamPoints?: (value: string) => void;
 };
+
+dayjs.extend(utc)
+
+overwrite([{
+  code: 'GB-ENG',
+  name: 'England'
+}])
 
 export function Game({ data, setFirstTeamPoints, setSecondTeamPoints, onGuessConfirm }: Props) {
   const { colors, sizes } = useTheme();
+  const when = dayjs(data.date).utc().locale(ptBR).format("DD [de] MMMM [de] YYYY [às] HH[h]mm")
 
+  function formatTeamName(teamName:string){
+    return teamName.replace(regex, '').split(' ')[0]
+  }
+
+
+  const regex = new RegExp(/[^a-zA-Z0-9 ]/g)
   return (
     <VStack
       w="full"
@@ -42,11 +60,11 @@ export function Game({ data, setFirstTeamPoints, setSecondTeamPoints, onGuessCon
       p={4}
     >
       <Text color="gray.100" fontFamily="heading" fontSize="sm">
-        {getName(data.firstTeamCountryCode)} vs. {getName(data.secondTeamCountryCode)}
+        {formatTeamName(getName(data.firstTeamCountryCode))} vs. {formatTeamName(getName(data.secondTeamCountryCode))}
       </Text>
 
       <Text color="gray.200" fontSize="xs">
-        22 de Novembro de 2022 às 16:00h
+        {when}
       </Text>
 
       <HStack mt={4} w="full" justifyContent="space-between" alignItems="center">
@@ -54,6 +72,7 @@ export function Game({ data, setFirstTeamPoints, setSecondTeamPoints, onGuessCon
           code={data.firstTeamCountryCode}
           position="right"
           onChangeText={setFirstTeamPoints}
+          guess={data?.guess?.firstTeamPoints}
         />
 
         <X color={colors.gray[300]} size={sizes[6]} />
@@ -62,6 +81,7 @@ export function Game({ data, setFirstTeamPoints, setSecondTeamPoints, onGuessCon
           code={data.secondTeamCountryCode}
           position="left"
           onChangeText={setSecondTeamPoints}
+          guess={data?.guess?.secondTeamPoints}
         />
       </HStack>
 
